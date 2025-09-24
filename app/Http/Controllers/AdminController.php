@@ -39,7 +39,7 @@ class AdminController extends Controller
             $file = $request->file('file');
             $importer = new DomainsImport();
             $count = $importer->import($file->getPathname());
-            
+
             return redirect()->back()->with('success', "Berhasil mengimport $count data!");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());

@@ -27,16 +27,17 @@ class DashboardController extends Controller
             ->leftJoin('domains', 'opd.id', '=', 'domains.opd_id')
             ->select(
                 'opd.nama_opd',
-                DB::raw('COUNT(CASE WHEN domains.status = "aktif" THEN 1 END) as aktif'),
-                DB::raw('COUNT(CASE WHEN domains.status = "tidak_aktif" THEN 1 END) as tidak_aktif')
+                DB::raw('COUNT(CASE WHEN domains.status = "Aktif" THEN 1 END) as aktif'),
+                DB::raw('COUNT(CASE WHEN domains.status = "Tidak Aktif" THEN 1 END) as tidak_aktif')
             )
             ->groupBy('opd.id', 'opd.nama_opd')
+            ->orderBy('opd.nama_opd')
             ->get();
 
         // Pie chart data
         $statusDistribution = [
-            'aktif' => Domain::where('status', 'aktif')->count(),
-            'tidak_aktif' => Domain::where('status', 'tidak_aktif')->count()
+            'aktif' => Domain::where('status', 'Aktif')->count(),
+            'tidak_aktif' => Domain::where('status', 'Tidak Aktif')->count()
         ];
 
         // Recent domains for table

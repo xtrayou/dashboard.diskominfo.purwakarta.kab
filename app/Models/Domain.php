@@ -20,8 +20,20 @@ class Domain extends Model
 
     protected $casts = [
         'backup_date' => 'date',
-        'completion_date' => 'date'
+        'completion_date' => 'date',
+        'status' => 'string'
     ];
+
+    const STATUS_AKTIF = 'Aktif';
+    const STATUS_TIDAK_AKTIF = 'Tidak Aktif';
+
+    public static function getStatusOptions()
+    {
+        return [
+            self::STATUS_AKTIF,
+            self::STATUS_TIDAK_AKTIF
+        ];
+    }
 
     public function opd()
     {

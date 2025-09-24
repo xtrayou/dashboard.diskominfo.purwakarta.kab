@@ -11,31 +11,31 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Statistics Cards -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
-                <div class="bg-orange-400 text-white p-4 rounded-lg shadow">
+                <div class="bg-orange-400 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">NAMA OPD</h3>
                     <p class="text-2xl font-bold">{{ $stats['total_opd'] }}</p>
                 </div>
-                <div class="bg-red-500 text-white p-4 rounded-lg shadow">
+                <div class="bg-red-500 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">DOMAIN</h3>
                     <p class="text-2xl font-bold">{{ $stats['total_domains'] }}</p>
                 </div>
-                <div class="bg-green-500 text-white p-4 rounded-lg shadow">
+                <div class="bg-green-500 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">SUBDOMAIN AKTIF</h3>
                     <p class="text-2xl font-bold">{{ $stats['active_subdomains'] }}</p>
                 </div>
-                <div class="bg-red-600 text-white p-4 rounded-lg shadow">
+                <div class="bg-red-600 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">SUBDOMAIN TIDAK AKTIF</h3>
                     <p class="text-2xl font-bold">{{ $stats['inactive_subdomains'] }}</p>
                 </div>
-                <div class="bg-yellow-400 text-white p-4 rounded-lg shadow">
+                <div class="bg-yellow-400 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">PROS BACKUP</h3>
                     <p class="text-2xl font-bold">{{ $stats['backup_pros'] }}</p>
                 </div>
-                <div class="bg-orange-500 text-white p-4 rounded-lg shadow">
+                <div class="bg-orange-500 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">PROS PENGHAPUSAN</h3>
                     <p class="text-2xl font-bold">14</p>
                 </div>
-                <div class="bg-orange-400 text-white p-4 rounded-lg shadow">
+                <div class="bg-orange-400 text-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <h3 class="text-sm font-medium">SELESAI BACKUP</h3>
                     <p class="text-2xl font-bold">{{ $stats['backup_selesai'] }}</p>
                 </div>
@@ -46,15 +46,19 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-semibold mb-4">Status Domain Berdasarkan Nama OPD</h3>
-                        <canvas id="domainChart" width="400" height="200"></canvas>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="domainChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Pie Chart -->
-                <div class="space-y-6">
+                <div>
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-semibold mb-4">Status Domain</h3>
-                        <canvas id="pieChart" width="300" height="300"></canvas>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="pieChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,16 +71,16 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">OPD Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Domain</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Backup Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OPD Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domain</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backup Date</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($recentDomains as $domain)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {{ $domain->opd->nama_opd }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -104,51 +108,113 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Bar Chart
-        const opdLabels = {!! json_encode($domainsByOpd->pluck('nama_opd')) !!};
-        const aktifData = {!! json_encode($domainsByOpd->pluck('aktif')) !!};
-        const tidakAktifData = {!! json_encode($domainsByOpd->pluck('tidak_aktif')) !!};
-        
-        const ctx = document.getElementById('domainChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: opdLabels,
-                datasets: [{
-                    label: 'Aktif',
-                    data: aktifData,
-                    backgroundColor: '#10B981',
-                }, {
-                    label: 'Tidak Aktif',
-                    data: tidakAktifData,
-                    backgroundColor: '#EF4444',
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart colors
+            const colors = {
+                green: '#10B981',
+                red: '#EF4444',
+                textColor: '#6B7280'
+            };
+
+            // Chart fonts
+            Chart.defaults.font.family = "'Inter', 'system-ui', '-apple-system', sans-serif";
+            Chart.defaults.font.size = 12;
+
+            // Bar Chart
+            const barChart = new Chart(document.getElementById('domainChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.opdLabels,
+                    datasets: [{
+                        label: 'Aktif',
+                        data: chartData.aktifData,
+                        backgroundColor: colors.green,
+                        borderRadius: 4
+                    }, {
+                        label: 'Tidak Aktif',
+                        data: chartData.tidakAktifData,
+                        backgroundColor: colors.red,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: colors.textColor
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: colors.textColor
+                            },
+                            grid: {
+                                borderDash: [2, 2]
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 20,
+                                boxWidth: 10,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Pie Chart
-        const statusData = {!! json_encode([$statusDistribution['aktif'], $statusDistribution['tidak_aktif']]) !!};
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Aktif', 'Tidak Aktif'],
-                datasets: [{
-                    data: statusData,
-                    backgroundColor: ['#10B981', '#EF4444']
-                }]
-            },
-            options: {
-                responsive: true
-            }
+            // Pie Chart
+            const pieChart = new Chart(document.getElementById('pieChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aktif', 'Tidak Aktif'],
+                    datasets: [{
+                        data: chartData.statusData,
+                        backgroundColor: [colors.green, colors.red],
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                boxWidth: 10,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
         });
     </script>
     @endpush
