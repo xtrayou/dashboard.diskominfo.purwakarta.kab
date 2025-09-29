@@ -43,21 +43,59 @@
         }
 
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Logo Animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulseSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .logo-spin {
+            animation: spin 3s linear infinite;
+        }
+
+        .logo-pulse-spin {
+            animation: pulseSpin 4s ease-in-out infinite;
+        }
+
+        .logo-hover {
+            transition: transform 0.5s ease;
+        }
+
+        .logo-hover:hover {
+            animation: spin 0.5s linear;
         }
     </style>
 </head>
 
 <body class="min-h-screen"
-      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
+    style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     <!-- Header -->
     <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 text-white p-6 rounded-lg m-4 shadow-lg">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}"
-                    alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg">
+                <img src="<?php echo e(asset('images/logos/logo-diskominfo-purwakarta.jpg')); ?>"
+                    alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg logo-pulse-spin logo-hover cursor-pointer">
                 <div>
                     <h1 class="text-2xl font-bold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
                     <p class="text-gray-200 flex items-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">
@@ -73,15 +111,15 @@
                 <!-- User Menu -->
                 <div class="relative">
                     <button id="userMenuButton" class="flex items-center space-x-2 bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-2 rounded-lg transition-colors border border-white border-opacity-20">
-                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">{{ auth()->user()->name }}</span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;"><?php echo e(auth()->user()->name); ?></span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                        <form method="POST" action="{{ route('logout') }}" class="block">
-                            @csrf
+                        <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>
                         </form>
                     </div>
@@ -95,8 +133,8 @@
         <nav class="px-6 py-4">
             <ul class="flex space-x-8 text-sm font-medium">
                 <li>
-                    <a href="{{ route('dashboard') }}"
-                        class="flex items-center space-x-2 text-blue-600 border-b-2 border-blue-600 pb-2 {{ request()->routeIs('dashboard') ? 'active' : 'text-gray-600 hover:text-blue-600' }}">
+                    <a href="<?php echo e(route('dashboard')); ?>"
+                        class="flex items-center space-x-2 text-blue-600 border-b-2 border-blue-600 pb-2 <?php echo e(request()->routeIs('dashboard') ? 'active' : 'text-gray-600 hover:text-blue-600'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
@@ -104,8 +142,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('health.monitoring') }}"
-                        class="flex items-center space-x-2 {{ request()->routeIs('health.monitoring') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600' }}">
+                    <a href="<?php echo e(route('health.monitoring')); ?>"
+                        class="flex items-center space-x-2 <?php echo e(request()->routeIs('health.monitoring') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -113,8 +151,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('subdomain.status') }}"
-                        class="flex items-center space-x-2 {{ request()->routeIs('subdomain.status') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600' }}">
+                    <a href="<?php echo e(route('subdomain.status')); ?>"
+                        class="flex items-center space-x-2 <?php echo e(request()->routeIs('subdomain.status') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
                         </svg>
@@ -122,8 +160,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('server.infrastructure') }}"
-                        class="flex items-center space-x-2 {{ request()->routeIs('server.infrastructure') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600' }}">
+                    <a href="<?php echo e(route('server.infrastructure')); ?>"
+                        class="flex items-center space-x-2 <?php echo e(request()->routeIs('server.infrastructure') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
                         </svg>
@@ -131,8 +169,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('realtime.monitoring') }}"
-                        class="flex items-center space-x-2 {{ request()->routeIs('realtime.monitoring') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600' }}">
+                    <a href="<?php echo e(route('realtime.monitoring')); ?>"
+                        class="flex items-center space-x-2 <?php echo e(request()->routeIs('realtime.monitoring') ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-600 hover:text-blue-600'); ?>">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
@@ -148,19 +186,19 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="card-orange text-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-sm font-medium opacity-90">SUBDOMAIN SAMA</h3>
-                <p class="text-3xl font-bold">{{ $stats['subdomain_sama'] }}</p>
+                <p class="text-3xl font-bold"><?php echo e($stats['subdomain_sama']); ?></p>
             </div>
             <div class="card-green text-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-sm font-medium opacity-90">AKTIF</h3>
-                <p class="text-3xl font-bold">{{ $stats['aktif'] }}</p>
+                <p class="text-3xl font-bold"><?php echo e($stats['aktif']); ?></p>
             </div>
             <div class="card-red text-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-sm font-medium opacity-90">TIDAK AKTIF</h3>
-                <p class="text-3xl font-bold">{{ $stats['tidak_aktif'] }}</p>
+                <p class="text-3xl font-bold"><?php echo e($stats['tidak_aktif']); ?></p>
             </div>
             <div class="card-blue text-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-sm font-medium opacity-90">KATEGORI DOMAIN</h3>
-                <p class="text-3xl font-bold">{{ $stats['kategori_domain'] }}</p>
+                <p class="text-3xl font-bold"><?php echo e($stats['kategori_domain']); ?></p>
             </div>
         </div>
 
@@ -206,17 +244,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($categoryData as $item)
+                            <?php $__currentLoopData = $categoryData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr class="border-t">
-                                <td class="p-2">{{ $item['source'] }}</td>
+                                <td class="p-2"><?php echo e($item['source']); ?></td>
                                 <td class="p-2">
                                     <span class="inline-block w-3 h-3 rounded-full mr-2 
-                                        {{ $item['status'] === 'AKTIF' ? 'bg-green-500' : 'bg-red-500' }}"></span>
-                                    {{ $item['status'] }}
+                                        <?php echo e($item['status'] === 'AKTIF' ? 'bg-green-500' : 'bg-red-500'); ?>"></span>
+                                    <?php echo e($item['status']); ?>
+
                                 </td>
-                                <td class="p-2">{{ $item['record'] }}</td>
+                                <td class="p-2"><?php echo e($item['record']); ?></td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
@@ -251,13 +290,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($ipAddressData as $index => $item)
-                            <tr class="border-t {{ $index % 2 === 0 ? 'bg-gray-50' : '' }}">
-                                <td class="p-2">{{ $item['ip'] }}</td>
-                                <td class="text-center p-2">{{ $item['aktif'] }}</td>
-                                <td class="text-center p-2">{{ $item['tidak_aktif'] }}</td>
+                            <?php $__currentLoopData = $ipAddressData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr class="border-t <?php echo e($index % 2 === 0 ? 'bg-gray-50' : ''); ?>">
+                                <td class="p-2"><?php echo e($item['ip']); ?></td>
+                                <td class="text-center p-2"><?php echo e($item['aktif']); ?></td>
+                                <td class="text-center p-2"><?php echo e($item['tidak_aktif']); ?></td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                     <div class="text-right text-xs text-gray-500 mt-2">1 - 40 / 40</div>
@@ -267,6 +306,18 @@
     </div>
 
     <script>
+        // Data from Laravel backend
+        const ipAddressChartLabels = <?php echo json_encode(array_keys($ipAddressChart)); ?>;
+        const ipAddressChartData = <?php echo json_encode(array_values($ipAddressChart)); ?>;
+        const statusByOpdLabels = <?php echo json_encode(array_column($statusByOpdChart, 'nama_opd')); ?>;
+        const statusByOpdAktif = <?php echo json_encode(array_column($statusByOpdChart, 'aktif')); ?>;
+        const statusByOpdTidakAktif = <?php echo json_encode(array_column($statusByOpdChart, 'tidak_aktif')); ?>;
+        const statusDistributionTidakAktif = <?php echo e($statusDistribution['tidak_aktif']); ?>;
+        const statusDistributionAktif = <?php echo e($statusDistribution['aktif']); ?>;
+        const domainDistributionTidakAktif = <?php echo e($domainDistribution['tidak_aktif']); ?>;
+        const domainDistributionAktif = <?php echo e($domainDistribution['aktif']); ?>;
+        const domainDistributionLocal = <?php echo e($domainDistribution['local']); ?>;
+
         // Chart configurations
         const chartOptions = {
             responsive: true,
@@ -283,14 +334,10 @@
         const ipChart = new Chart(ipCtx, {
             type: 'bar',
             data: {
-                labels: {
-                    !!json_encode(array_keys($ipAddressChart)) !!
-                },
+                labels: ipAddressChartLabels,
                 datasets: [{
                     label: 'Jumlah IP Subdomain yang sama',
-                    data: {
-                        !!json_encode(array_values($ipAddressChart)) !!
-                    },
+                    data: ipAddressChartData,
                     backgroundColor: '#ff9500',
                     borderColor: '#ff7b00',
                     borderWidth: 1
@@ -322,20 +369,14 @@
         const statusChart = new Chart(statusCtx, {
             type: 'bar',
             data: {
-                labels: {
-                    !!json_encode(array_column($statusByOpdChart, 'nama_opd')) !!
-                },
+                labels: statusByOpdLabels,
                 datasets: [{
                     label: 'Aktif',
-                    data: {
-                        !!json_encode(array_column($statusByOpdChart, 'aktif')) !!
-                    },
+                    data: statusByOpdAktif,
                     backgroundColor: '#4caf50'
                 }, {
                     label: 'Tidak Aktif',
-                    data: {
-                        !!json_encode(array_column($statusByOpdChart, 'tidak_aktif')) !!
-                    },
+                    data: statusByOpdTidakAktif,
                     backgroundColor: '#f44336'
                 }]
             },
@@ -370,15 +411,7 @@
             data: {
                 labels: ['Tidak Aktif', 'Aktif'],
                 datasets: [{
-                    data: [{
-                        {
-                            $statusDistribution['tidak_aktif']
-                        }
-                    }, {
-                        {
-                            $statusDistribution['aktif']
-                        }
-                    }],
+                    data: [statusDistributionTidakAktif, statusDistributionAktif],
                     backgroundColor: ['#f44336', '#4caf50'],
                     borderWidth: 0
                 }]
@@ -393,19 +426,7 @@
             data: {
                 labels: ['Tidak Aktif', 'Aktif', 'Local'],
                 datasets: [{
-                    data: [{
-                        {
-                            $domainDistribution['tidak_aktif']
-                        }
-                    }, {
-                        {
-                            $domainDistribution['aktif']
-                        }
-                    }, {
-                        {
-                            $domainDistribution['local']
-                        }
-                    }],
+                    data: [domainDistributionTidakAktif, domainDistributionAktif, domainDistributionLocal],
                     backgroundColor: ['#f44336', '#4caf50', '#2196f3'],
                     borderWidth: 0
                 }]
@@ -431,4 +452,4 @@
     </script>
 </body>
 
-</html>
+</html><?php /**PATH C:\xampp\htdocs\DISKOMINFO\laravel\dashboard.diskominfo.purwakarta.kab\resources\views/pages/main/dashboard.blade.php ENDPATH**/ ?>

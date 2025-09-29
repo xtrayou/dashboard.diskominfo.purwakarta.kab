@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Detail Link Spreadsheet - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="min-h-screen"
-      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
+    style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     @include('layouts.navbar')
 
     <div class="container mx-auto px-4 py-8">
@@ -22,7 +23,7 @@
                 <a href="{{ route('admin.spreadsheet-links.edit', $spreadsheetLink) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
                     Edit
                 </a>
-                <button onclick="testConnection()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <button id="test-connection-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
                     Test Koneksi
                 </button>
                 <a href="{{ route('admin.spreadsheet-links.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
@@ -162,6 +163,10 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('test-connection-btn').addEventListener('click', testConnection);
+        });
+
         function testConnection() {
             const loadingDiv = document.getElementById('loadingData');
             const previewDiv = document.getElementById('dataPreview');
@@ -171,7 +176,7 @@
             previewDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
 
-            fetch(`/admin/spreadsheet-links/{{ $spreadsheetLink->id }}/test`, {
+            fetch('/admin/spreadsheet-links/{{ $spreadsheetLink->id }}/test', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

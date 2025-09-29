@@ -10,8 +10,8 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), 
-                        linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe),
+                linear-gradient(to bottom, #f8fafc, #f1f5f9);
         }
 
         .bg-primary {
@@ -55,9 +55,17 @@
         }
 
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .glass-card {
@@ -69,8 +77,8 @@
 </head>
 
 <body class="min-h-screen"
-      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
-    <?php echo $__env->make('layouts.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
+    @include('layouts.navbar')
 
     <!-- Header Section -->
     <div class="bg-primary text-white py-6 mb-6">
@@ -89,12 +97,12 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <a href="<?php echo e(route('admin.spreadsheet-links.index')); ?>" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg text-sm font-medium">
+                    <a href="{{ route('admin.spreadsheet-links.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg text-sm font-medium">
                         Kelola Data
                     </a>
-                    <?php if($activeSpreadsheet): ?>
-                    <p class="text-xs opacity-75 mt-2">Sumber: <?php echo e($activeSpreadsheet->name); ?></p>
-                    <?php endif; ?>
+                    @if($activeSpreadsheet)
+                    <p class="text-xs opacity-75 mt-2">Sumber: {{ $activeSpreadsheet->name }}</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -105,31 +113,31 @@
         <div class="grid grid-cols-2 md:grid-cols-7 gap-4 mb-8">
             <div class="card-orange text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">NAMA OPD</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['total_opd']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['total_opd'] }}</p>
             </div>
             <div class="card-red text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">DOMAIN</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['total_domains']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['total_domains'] }}</p>
             </div>
             <div class="card-green text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">SUBDOMAIN AKTIF</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['active_subdomains']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['active_subdomains'] }}</p>
             </div>
             <div class="card-red text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">SUBDOMAIN TIDAK AKTIF</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['inactive_subdomains']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['inactive_subdomains'] }}</p>
             </div>
             <div class="card-yellow text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">PROS BACKUP</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['backup_progress']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['backup_progress'] }}</p>
             </div>
             <div class="card-pink text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">PROS PENGATURAN</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['backup_pending']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['backup_pending'] }}</p>
             </div>
             <div class="card-cyan text-white p-4 rounded-lg shadow-lg">
                 <h3 class="text-xs font-medium opacity-90">SELESAI BACKUP</h3>
-                <p class="text-2xl font-bold"><?php echo e($subdomainStats['backup_completed']); ?></p>
+                <p class="text-2xl font-bold">{{ $subdomainStats['backup_completed'] }}</p>
             </div>
         </div>
 
@@ -163,16 +171,16 @@
         </div>
 
         <!-- Kecamatan Data Table -->
-        <?php if(count($kecamatanData) > 0): ?>
+        @if(count($kecamatanData) > 0)
         <div class="bg-white rounded-lg shadow-lg mb-8">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">KECAMATAN TEGALWARU</h3>
                 <p class="text-sm text-gray-600">Domain yang terhitung</p>
             </div>
             <div class="p-6">
-                <?php $__currentLoopData = $kecamatanData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kecamatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                @foreach($kecamatanData as $kecamatan)
                 <div class="mb-6">
-                    <h4 class="text-md font-semibold mb-3"><?php echo e($kecamatan['kecamatan']); ?></h4>
+                    <h4 class="text-md font-semibold mb-3">{{ $kecamatan['kecamatan'] }}</h4>
                     <div class="overflow-x-auto">
                         <table class="min-w-full">
                             <thead class="bg-blue-50">
@@ -183,21 +191,21 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                <?php $__currentLoopData = $kecamatan['domains']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $domain): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                @foreach($kecamatan['domains'] as $index => $domain)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-2 text-sm"><?php echo e($index + 1); ?></td>
-                                    <td class="px-4 py-2 text-sm font-medium text-gray-900"><?php echo e($domain['domain']); ?></td>
-                                    <td class="px-4 py-2 text-sm"><?php echo e($domain['count']); ?></td>
+                                    <td class="px-4 py-2 text-sm">{{ $index + 1 }}</td>
+                                    <td class="px-4 py-2 text-sm font-medium text-gray-900">{{ $domain['domain'] }}</td>
+                                    <td class="px-4 py-2 text-sm">{{ $domain['count'] }}</td>
                                 </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                @endforeach
             </div>
         </div>
-        <?php endif; ?>
+        @endif
 
         <!-- OPD Data Table -->
         <div class="bg-white rounded-lg shadow-lg">
@@ -207,8 +215,8 @@
                     <p class="text-sm text-gray-600">Daftar seluruh OPD dengan status subdomain</p>
                 </div>
                 <div class="flex space-x-2">
-                    <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">Aktif: <?php echo e($subdomainStats['active_subdomains']); ?></span>
-                    <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded">Tidak Aktif: <?php echo e($subdomainStats['inactive_subdomains']); ?></span>
+                    <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">Aktif: {{ $subdomainStats['active_subdomains'] }}</span>
+                    <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded">Tidak Aktif: {{ $subdomainStats['inactive_subdomains'] }}</span>
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -223,25 +231,25 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <?php $__currentLoopData = $opdData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $opd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        @foreach($opdData as $index => $opd)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900"><?php echo e($index + 1); ?>. <?php echo e($opd['name']); ?></div>
+                                <div class="text-sm font-medium text-gray-900">{{ $index + 1 }}. {{ $opd['name'] }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e($opd['domain_count']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e($opd['active_subdomains']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $opd['domain_count'] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $opd['active_subdomains'] }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0</td>
                         </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        @endforeach
                     </tbody>
                     <tfoot class="bg-gray-50">
                         <tr>
                             <td class="px-6 py-3 text-sm font-medium text-gray-900">Total tersusun..</td>
-                            <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo e($subdomainStats['total_domains']); ?></td>
-                            <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo e($subdomainStats['backup_progress']); ?></td>
-                            <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo e($subdomainStats['backup_completed']); ?></td>
-                            <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo e($subdomainStats['backup_pending']); ?></td>
+                            <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $subdomainStats['total_domains'] }}</td>
+                            <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $subdomainStats['backup_progress'] }}</td>
+                            <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $subdomainStats['backup_completed'] }}</td>
+                            <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $subdomainStats['backup_pending'] }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -266,15 +274,15 @@
         const opdChart = new Chart(opdCtx, {
             type: 'bar',
             data: {
-                labels: <?php echo json_encode(array_column($opdData, 'name'), 512) ?>,
+                labels: @json(array_column($opdData, 'name')),
                 datasets: [{
                     label: 'Aktif',
-                    data: <?php echo json_encode(array_column($opdData, 'active_subdomains'), 512) ?>,
+                    data: @json(array_column($opdData, 'active_subdomains')),
                     backgroundColor: '#10b981',
                     stack: 'stack1'
                 }, {
                     label: 'Tidak Aktif',
-                    data: <?php echo json_encode(array_column($opdData, 'inactive_subdomains'), 512) ?>,
+                    data: @json(array_column($opdData, 'inactive_subdomains')),
                     backgroundColor: '#ef4444',
                     stack: 'stack1'
                 }]
@@ -355,4 +363,4 @@
     </script>
 </body>
 
-</html><?php /**PATH C:\xampp\htdocs\DISKOMINFO\laravel\dashboard.diskominfo.purwakarta.kab\resources\views/subdomain-status.blade.php ENDPATH**/ ?>
+</html>

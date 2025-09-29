@@ -6,7 +6,7 @@ use App\Http\Controllers\SpreadsheetLinkController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.welcome.welcome');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -38,12 +38,12 @@ Route::middleware('auth')->group(function () {
 
     // Logo guide page
     Route::get('/logo-guide', function () {
-        return view('logo-guide');
+        return view('tools.logo-guide');
     })->name('logo.guide');
 
     // Logo background remover tool
     Route::get('/logo-background-remover', function () {
-        return view('logo-background-remover');
+        return view('tools.logo-background-remover');
     })->name('logo.background.remover');
 });
 

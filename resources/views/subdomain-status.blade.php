@@ -10,8 +10,8 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), 
-                        linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe),
+                linear-gradient(to bottom, #f8fafc, #f1f5f9);
         }
 
         .bg-primary {
@@ -55,9 +55,17 @@
         }
 
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .glass-card {
@@ -69,7 +77,7 @@
 </head>
 
 <body class="min-h-screen"
-      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
+    style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     @include('layouts.navbar')
 
     <!-- Header Section -->
@@ -301,15 +309,7 @@
             data: {
                 labels: ['Aktif', 'Tidak Aktif'],
                 datasets: [{
-                    data: [{
-                        {
-                            $subdomainStats['active_subdomains']
-                        }
-                    }, {
-                        {
-                            $subdomainStats['inactive_subdomains']
-                        }
-                    }],
+                    data: @json([(int) $subdomainStats['active_subdomains'], (int) $subdomainStats['inactive_subdomains']])
                     backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4']
                 }]
             },

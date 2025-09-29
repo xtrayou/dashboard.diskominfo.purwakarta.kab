@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Kelola Link Spreadsheet - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="min-h-screen"
-      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
+    style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     @include('layouts.navbar')
 
     <div class="container mx-auto px-4 py-8">
@@ -77,7 +78,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                 <div class="flex justify-center space-x-2">
-                                    <button onclick="testConnection({{ $link->id }})" class="text-blue-600 hover:text-blue-900">
+                                    <button data-link-id="{{ $link->id }}" class="test-connection-btn text-blue-600 hover:text-blue-900" type="button">
                                         Test
                                     </button>
                                     <a href="{{ route('admin.spreadsheet-links.show', $link) }}" class="text-green-600 hover:text-green-900">
@@ -118,6 +119,16 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to all test connection buttons
+            document.querySelectorAll('.test-connection-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const linkId = this.getAttribute('data-link-id');
+                    testConnection(linkId);
+                });
+            });
+        });
+
         function testConnection(linkId) {
             fetch(`/admin/spreadsheet-links/${linkId}/test`, {
                     method: 'POST',
@@ -135,6 +146,7 @@
                     }
                 })
                 .catch(error => {
+                    console.error('Error:', error);
                     alert('Terjadi kesalahan saat testing koneksi');
                 });
         }

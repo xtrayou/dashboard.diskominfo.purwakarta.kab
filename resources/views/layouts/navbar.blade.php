@@ -1,12 +1,62 @@
 <!-- Header -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<style>
+    /* Logo Animations */
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes pulseSpin {
+        0% {
+            transform: rotate(0deg) scale(1);
+        }
+
+        25% {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        50% {
+            transform: rotate(180deg) scale(1);
+        }
+
+        75% {
+            transform: rotate(270deg) scale(1.1);
+        }
+
+        100% {
+            transform: rotate(360deg) scale(1);
+        }
+    }
+
+    .logo-spin {
+        animation: spin 3s linear infinite;
+    }
+
+    .logo-pulse-spin {
+        animation: pulseSpin 4s ease-in-out infinite;
+    }
+
+    .logo-hover {
+        transition: transform 0.5s ease;
+    }
+
+    .logo-hover:hover {
+        animation: spin 0.5s linear;
+    }
+</style>
 <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 shadow-lg text-white p-6 rounded-lg m-4">
     <div class="flex justify-between items-center">
         <div class="flex items-center space-x-4">
             <!-- Logo Diskominfo Purwakarta -->
             <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}"
                 alt="Logo Diskominfo Purwakarta"
-                class="w-12 h-12 object-contain rounded-lg">
+                class="w-12 h-12 object-contain rounded-lg logo-spin logo-hover cursor-pointer">
 
             <div>
                 <h1 class="text-xl md:text-2xl font-bold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
