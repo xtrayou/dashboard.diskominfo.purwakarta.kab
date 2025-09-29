@@ -10,7 +10,7 @@
 
 <body class="min-h-screen"
       style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
-    @include('layouts.navbar')
+    <?php echo $__env->make('layouts.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8">
@@ -19,13 +19,13 @@
                 <p class="text-gray-600">Informasi lengkap dan preview data</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('admin.spreadsheet-links.edit', $spreadsheetLink) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
+                <a href="<?php echo e(route('admin.spreadsheet-links.edit', $spreadsheetLink)); ?>" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
                     Edit
                 </a>
                 <button onclick="testConnection()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
                     Test Koneksi
                 </button>
-                <a href="{{ route('admin.spreadsheet-links.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
+                <a href="<?php echo e(route('admin.spreadsheet-links.index')); ?>" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
                     Kembali
                 </a>
             </div>
@@ -40,59 +40,59 @@
                     <div class="space-y-4">
                         <div>
                             <label class="text-sm font-medium text-gray-500">Nama</label>
-                            <p class="text-gray-900 font-medium">{{ $spreadsheetLink->name }}</p>
+                            <p class="text-gray-900 font-medium"><?php echo e($spreadsheetLink->name); ?></p>
                         </div>
 
                         <div>
                             <label class="text-sm font-medium text-gray-500">Status</label>
                             <div class="mt-1">
-                                @if($spreadsheetLink->is_active)
+                                <?php if($spreadsheetLink->is_active): ?>
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                                     Aktif
                                 </span>
-                                @else
+                                <?php else: ?>
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
                                     Tidak Aktif
                                 </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <div>
                             <label class="text-sm font-medium text-gray-500">URL</label>
-                            <p class="text-gray-900 break-all text-sm">{{ $spreadsheetLink->url }}</p>
-                            <a href="{{ $spreadsheetLink->url }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                            <p class="text-gray-900 break-all text-sm"><?php echo e($spreadsheetLink->url); ?></p>
+                            <a href="<?php echo e($spreadsheetLink->url); ?>" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
                                 Buka di Google Sheets ↗
                             </a>
                         </div>
 
-                        @if($spreadsheetLink->sheet_id)
+                        <?php if($spreadsheetLink->sheet_id): ?>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Sheet ID</label>
-                            <p class="text-gray-900 font-mono text-sm bg-gray-100 p-2 rounded">{{ $spreadsheetLink->sheet_id }}</p>
+                            <p class="text-gray-900 font-mono text-sm bg-gray-100 p-2 rounded"><?php echo e($spreadsheetLink->sheet_id); ?></p>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
                         <div>
                             <label class="text-sm font-medium text-gray-500">Range Data</label>
-                            <p class="text-gray-900">{{ $spreadsheetLink->range }}</p>
+                            <p class="text-gray-900"><?php echo e($spreadsheetLink->range); ?></p>
                         </div>
 
-                        @if($spreadsheetLink->description)
+                        <?php if($spreadsheetLink->description): ?>
                         <div>
                             <label class="text-sm font-medium text-gray-500">Deskripsi</label>
-                            <p class="text-gray-900">{{ $spreadsheetLink->description }}</p>
+                            <p class="text-gray-900"><?php echo e($spreadsheetLink->description); ?></p>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
                         <div>
                             <label class="text-sm font-medium text-gray-500">Dibuat</label>
-                            <p class="text-gray-900">{{ $spreadsheetLink->created_at->format('d/m/Y H:i') }}</p>
+                            <p class="text-gray-900"><?php echo e($spreadsheetLink->created_at->format('d/m/Y H:i')); ?></p>
                         </div>
 
                         <div>
                             <label class="text-sm font-medium text-gray-500">Terakhir Update</label>
-                            <p class="text-gray-900">{{ $spreadsheetLink->updated_at->format('d/m/Y H:i') }}</p>
+                            <p class="text-gray-900"><?php echo e($spreadsheetLink->updated_at->format('d/m/Y H:i')); ?></p>
                         </div>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
             previewDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
 
-            fetch(`/admin/spreadsheet-links/{{ $spreadsheetLink->id }}/test`, {
+            fetch(`/admin/spreadsheet-links/<?php echo e($spreadsheetLink->id); ?>/test`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -270,4 +270,4 @@
     </script>
 </body>
 
-</html>
+</html><?php /**PATH C:\xampp\htdocs\DISKOMINFO\laravel\dashboard.diskominfo.purwakarta.kab\resources\views/admin/spreadsheet-links/show.blade.php ENDPATH**/ ?>

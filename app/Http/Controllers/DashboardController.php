@@ -7,21 +7,80 @@ use App\Models\Opd;
 use App\Models\Backup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
+    /**
+     * Get data from Google Sheets
+     */
+    private function getGoogleSheetsData()
+    {
+        $spreadsheetId = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
+        $range = 'Class Data!A1:F31'; // Sheet1 with range
+        
+        // Cache for 10 minutes to avoid too many API calls
+        return Cache::remember('google_sheets_data', 600, function () use ($spreadsheetId, $range) {
+            try {
+                $url = "https://docs.google.com/spreadsheets/d/{$spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode('Class Data');
+                $response = Http::timeout(10)->get($url);
+                
+                if ($response->successful()) {
+                    $csvData = $response->body();
+                    $lines = explode("\n", $csvData);
+                    $data = [];
+                    
+                    foreach ($lines as $index => $line) {
+                        if ($index === 0 || empty(trim($line))) continue; // Skip header and empty lines
+                        
+                        $row = str_getcsv($line);
+                        if (count($row) >= 6) {
+                            $data[] = [
+                                'name' => trim($row[0], '"'),
+                                'gender' => trim($row[1], '"'),
+                                'class_level' => trim($row[2], '"'),
+                                'home_state' => trim($row[3], '"'),
+                                'major' => trim($row[4], '"'),
+                                'extracurricular' => trim($row[5], '"'),
+                            ];
+                        }
+                    }
+                    
+                    return $data;
+                }
+                
+                return [];
+            } catch (\Exception $e) {
+                Log::error('Google Sheets API Error: ' . $e->getMessage());
+                return [];
+            }
+        });
+    }
+
     public function index()
     {
-        // Statistics for cards
+        // Get data from Google Sheets
+        $sheetsData = $this->getGoogleSheetsData();
+        
+        // Process Google Sheets data for statistics
+        $totalStudents = count($sheetsData);
+        $maleCount = collect($sheetsData)->where('gender', 'Male')->count();
+        $femaleCount = collect($sheetsData)->where('gender', 'Female')->count();
+        $stateCount = collect($sheetsData)->pluck('home_state')->unique()->count();
+        
+        // Statistics for cards (using Google Sheets data)
         $stats = [
-            'subdomain_sama' => Domain::count() ?: 724,
-            'aktif' => Domain::where('status', 'Aktif')->count() ?: 367,
-            'tidak_aktif' => Domain::where('status', 'Tidak Aktif')->count() ?: 354,
-            'kategori_domain' => Opd::count() ?: 2,
+            'subdomain_sama' => $totalStudents ?: 724,
+            'aktif' => $maleCount ?: 367,
+            'tidak_aktif' => $femaleCount ?: 354,
+            'kategori_domain' => $stateCount ?: 2,
         ];
 
-        // Chart data - Jumlah Ip Subdomain yang sama menurut IP ADDRESS
-        $ipAddressChart = [
+        // Chart data - Class Level Distribution from Google Sheets
+        $classLevelData = collect($sheetsData)->groupBy('class_level')->map->count();
+        $ipAddressChart = $classLevelData->take(10)->toArray() ?: [
             '216.244.84.196' => 300,
             '216.244.84.194' => 280,
             '103.133.27.164' => 25,
@@ -32,20 +91,20 @@ class DashboardController extends Controller
             '103.133.27.216' => 5,
             '103.133.27.217' => 3,
             '103.133.27.218' => 2,
-            '216.244.84.197' => 1,
         ];
 
-        // Chart data - Distribusi Subdomain Berdasarkan Status by OPD
-        $statusByOpdChart = DB::table('opd')
-            ->leftJoin('domains', 'opd.id', '=', 'domains.opd_id')
-            ->select(
-                'opd.nama_opd',
-                DB::raw('COUNT(CASE WHEN domains.status = "Aktif" THEN 1 END) as aktif'),
-                DB::raw('COUNT(CASE WHEN domains.status = "Tidak Aktif" THEN 1 END) as tidak_aktif')
-            )
-            ->groupBy('opd.id', 'opd.nama_opd')
-            ->orderBy('opd.nama_opd')
-            ->get();
+        // Chart data - Distribution by Home State from Google Sheets
+        $stateData = collect($sheetsData)->groupBy('home_state');
+        $statusByOpdChart = $stateData->map(function ($students, $state) {
+            $maleCount = $students->where('gender', 'Male')->count();
+            $femaleCount = $students->where('gender', 'Female')->count();
+            
+            return (object) [
+                'nama_opd' => $state,
+                'aktif' => $maleCount,
+                'tidak_aktif' => $femaleCount
+            ];
+        })->values();
 
         // Pie chart data - Persentase Status
         $statusDistribution = [
@@ -53,17 +112,21 @@ class DashboardController extends Controller
             'aktif' => $stats['aktif']
         ];
 
-        // Pie chart data - Persentase Domain
+        // Pie chart data - Persentase Domain (by Major from Google Sheets)
+        $majorData = collect($sheetsData)->groupBy('major');
+        $majorCounts = $majorData->map->count();
+        $topMajors = $majorCounts->sortDesc()->take(3);
+        
         $domainDistribution = [
-            'tidak_aktif' => $stats['tidak_aktif'],
-            'aktif' => $stats['aktif'],
-            'local' => Domain::where('domain_name', 'like', '%local%')->count() ?: 50
+            'tidak_aktif' => $topMajors->get($topMajors->keys()->get(0), 0),
+            'aktif' => $topMajors->get($topMajors->keys()->get(1), 0),
+            'local' => $topMajors->get($topMajors->keys()->get(2), 0)
         ];
 
         // Category table data
         $categoryData = [
-            ['source' => 'INDOLUS', 'status' => 'TIDAK AKTIF', 'record' => 200],
-            ['source' => 'INDOLUS', 'status' => 'AKTIF', 'record' => 205],
+            ['source' => 'INDOGLOBAL', 'status' => 'TIDAK AKTIF', 'record' => 200],
+            ['source' => 'INDOGLOBAL', 'status' => 'AKTIF', 'record' => 205],
             ['source' => 'LOCAL', 'status' => 'TIDAK AKTIF', 'record' => 46],
             ['source' => 'LOCAL', 'status' => 'AKTIF', 'record' => 24],
         ];
@@ -84,8 +147,22 @@ class DashboardController extends Controller
             'statusDistribution',
             'domainDistribution',
             'categoryData',
-            'ipAddressData'
+            'ipAddressData',
+            'sheetsData'
         ));
+    }
+
+    /**
+     * Show Google Sheets raw data for testing
+     */
+    public function showSheetsData()
+    {
+        $sheetsData = $this->getGoogleSheetsData();
+        return response()->json([
+            'success' => true,
+            'count' => count($sheetsData),
+            'data' => $sheetsData
+        ]);
     }
 
     public function healthMonitoring()

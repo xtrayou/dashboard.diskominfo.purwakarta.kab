@@ -7,8 +7,26 @@
     <title>Login - Dashboard Diskominfo Purwakarta</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        }
+        
         .login-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
@@ -17,14 +35,14 @@
     <div class="w-full max-w-md">
         <!-- Logo dan Header -->
         <div class="text-center mb-8">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Lambang_Kabupaten_Purwakarta.svg/200px-Lambang_Kabupaten_Purwakarta.svg.png"
-                alt="Logo Purwakarta" class="w-20 h-20 mx-auto mb-4">
+            <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}"
+                alt="Logo Diskominfo Purwakarta" class="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-2xl">
             <h1 class="text-white text-2xl font-bold mb-2">Dashboard Diskominfo</h1>
-            <p class="text-blue-100">Kabupaten Purwakarta</p>
+            <p class="text-gray-200">Kabupaten Purwakarta</p>
         </div>
 
         <!-- Login Form -->
-        <div class="bg-white rounded-2xl shadow-2xl p-8">
+        <div class="glass-form rounded-2xl shadow-2xl p-8">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Masuk ke Dashboard</h2>
 
             <!-- Session Status -->

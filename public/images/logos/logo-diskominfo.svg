@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0066CC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004499;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Logo Symbol -->
+  <g transform="translate(100, 50)">
+    <!-- Outer curved shape -->
+    <path d="M20 80 Q20 20, 80 20 Q140 20, 140 80 Q140 140, 80 140 Q60 140, 45 125 L65 105 Q75 115, 80 115 Q115 115, 115 80 Q115 45, 80 45 Q45 45, 45 80 Q45 95, 55 105 L75 85 Q80 90, 85 85 Q90 80, 85 75 Q80 70, 75 75 L55 55 Q35 75, 35 80 Q35 120, 75 120 L90 105 Q100 115, 110 105 L95 90 Q85 100, 75 100 Q55 100, 55 80 Q55 60, 75 60 Q95 60, 95 80 Q95 90, 85 90 L75 80 L85 70 Q95 80, 85 90" fill="url(#blueGradient)"/>
+    
+    <!-- Inner spiral -->
+    <circle cx="80" cy="80" r="35" fill="none" stroke="url(#blueGradient)" stroke-width="8"/>
+    <circle cx="80" cy="80" r="25" fill="none" stroke="url(#blueGradient)" stroke-width="6"/>
+    <circle cx="80" cy="80" r="15" fill="none" stroke="url(#blueGradient)" stroke-width="4"/>
+    <circle cx="80" cy="80" r="8" fill="url(#blueGradient)"/>
+  </g>
+  
+  <!-- Text -->
+  <g transform="translate(50, 220)">
+    <text x="0" y="40" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#333">diskominfo</text>
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="32" font-weight="300" fill="#666">purwakarta</text>
+  </g>
+</svg>

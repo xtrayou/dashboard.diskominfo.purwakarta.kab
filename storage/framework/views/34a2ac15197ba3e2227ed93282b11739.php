@@ -7,8 +7,26 @@
     <title>Dashboard Diskominfo Purwakarta</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        }
+        
         .hero-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
@@ -16,14 +34,14 @@
 <body class="hero-bg min-h-screen flex items-center justify-center">
     <div class="text-center text-white px-4">
         <!-- Logo -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Lambang_Kabupaten_Purwakarta.svg/200px-Lambang_Kabupaten_Purwakarta.svg.png"
-            alt="Logo Purwakarta" class="w-32 h-32 mx-auto mb-8">
+        <img src="<?php echo e(asset('images/logos/logo-diskominfo-purwakarta.jpg')); ?>"
+            alt="Logo Diskominfo Purwakarta" class="w-32 h-32 mx-auto mb-8 rounded-2xl shadow-2xl">
 
         <!-- Title -->
         <h1 class="text-4xl md:text-6xl font-bold mb-4">
             Dashboard Diskominfo
         </h1>
-        <h2 class="text-xl md:text-2xl font-medium mb-8">
+        <h2 class="text-xl md:text-2xl font-medium mb-8 text-gray-200">
             Kabupaten Purwakarta
         </h2>
 

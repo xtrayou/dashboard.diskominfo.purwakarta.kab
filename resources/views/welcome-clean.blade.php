@@ -16,8 +16,8 @@
 <body class="hero-bg min-h-screen flex items-center justify-center">
     <div class="text-center text-white px-4">
         <!-- Logo -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Lambang_Kabupaten_Purwakarta.svg/200px-Lambang_Kabupaten_Purwakarta.svg.png"
-            alt="Logo Purwakarta" class="w-32 h-32 mx-auto mb-8">
+        <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}"
+            alt="Logo Diskominfo Purwakarta" class="w-32 h-32 mx-auto mb-8 rounded-lg">
 
         <!-- Title -->
         <h1 class="text-4xl md:text-6xl font-bold mb-4">

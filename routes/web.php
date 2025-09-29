@@ -13,6 +13,11 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Test route for Google Sheets data
+Route::get('/test-sheets', [DashboardController::class, 'showSheetsData'])
+    ->middleware(['auth'])
+    ->name('test.sheets');
+
 Route::middleware('auth')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,6 +35,16 @@ Route::middleware('auth')->group(function () {
         Route::resource('spreadsheet-links', SpreadsheetLinkController::class);
         Route::post('spreadsheet-links/{spreadsheetLink}/test', [SpreadsheetLinkController::class, 'testConnection'])->name('spreadsheet-links.test');
     });
+
+    // Logo guide page
+    Route::get('/logo-guide', function () {
+        return view('logo-guide');
+    })->name('logo.guide');
+
+    // Logo background remover tool
+    Route::get('/logo-background-remover', function () {
+        return view('logo-background-remover');
+    })->name('logo.background.remover');
 });
 
 require __DIR__ . '/auth.php';

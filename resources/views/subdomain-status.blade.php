@@ -8,37 +8,68 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), 
+                        linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        }
+
         .bg-primary {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6, #60a5fa);
         }
 
         .card-orange {
             background: linear-gradient(135deg, #ea580c, #f97316);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
         }
 
         .card-red {
             background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
         }
 
         .card-green {
             background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
 
         .card-yellow {
             background: linear-gradient(135deg, #d97706, #f59e0b);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
         }
 
         .card-pink {
             background: linear-gradient(135deg, #be185d, #ec4899);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
         }
 
         .card-cyan {
             background: linear-gradient(135deg, #0891b2, #06b6d4);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .github-gradient {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-100 to-blue-200">
+<body class="min-h-screen"
+      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     @include('layouts.navbar')
 
     <!-- Header Section -->

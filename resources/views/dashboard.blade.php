@@ -8,48 +8,72 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        }
+
         .card-orange {
             background: linear-gradient(135deg, #ff9500, #ff7b00);
+            box-shadow: 0 10px 25px rgba(255, 149, 0, 0.3);
         }
 
         .card-green {
             background: linear-gradient(135deg, #4caf50, #388e3c);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
         }
 
         .card-red {
             background: linear-gradient(135deg, #f44336, #d32f2f);
+            box-shadow: 0 10px 25px rgba(244, 67, 54, 0.3);
         }
 
         .card-blue {
             background: linear-gradient(135deg, #2196f3, #1976d2);
+            box-shadow: 0 10px 25px rgba(33, 150, 243, 0.3);
         }
 
         .chart-container {
             height: 300px;
         }
+
+        .github-gradient {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="min-h-screen"
+      style="background: radial-gradient(ellipse at top, #f0f9ff, #e0f2fe), linear-gradient(to bottom, #f8fafc, #f1f5f9);">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg m-4">
+    <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 text-white p-6 rounded-lg m-4 shadow-lg">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Lambang_Kabupaten_Purwakarta.svg/200px-Lambang_Kabupaten_Purwakarta.svg.png"
-                    alt="Logo Diskominfo" class="w-12 h-12">
+                <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}"
+                    alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg">
                 <div>
-                    <h1 class="text-2xl font-bold">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
-                    <p class="text-blue-100">Dinas Komunikasi dan Informatika</p>
+                    <h1 class="text-2xl font-bold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
+                    <p class="text-gray-200 flex items-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">
+                        <span>Dinas Komunikasi dan Informatika</span>
+                        <span class="ml-2 text-xs bg-blue-600 text-white px-2 py-1 rounded-full">Purwakarta</span>
+                    </p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
+                <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-2 rounded-lg transition-colors border border-white border-opacity-20">
                     Refresh Data
                 </button>
                 <!-- User Menu -->
                 <div class="relative">
-                    <button id="userMenuButton" class="flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-colors">
-                        <span>{{ auth()->user()->name }}</span>
+                    <button id="userMenuButton" class="flex items-center space-x-2 bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-2 rounded-lg transition-colors border border-white border-opacity-20">
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">{{ auth()->user()->name }}</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -243,16 +267,27 @@
     </div>
 
     <script>
+        // Chart configurations
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        };
+
         // IP Address Bar Chart
         const ipCtx = document.getElementById('ipChart').getContext('2d');
-        new Chart(ipCtx, {
+        const ipChart = new Chart(ipCtx, {
             type: 'bar',
             data: {
                 labels: {
                     !!json_encode(array_keys($ipAddressChart)) !!
                 },
                 datasets: [{
-                    label: 'Jumlah Ip Subdomain yang sama',
+                    label: 'Jumlah IP Subdomain yang sama',
                     data: {
                         !!json_encode(array_values($ipAddressChart)) !!
                     },
@@ -262,8 +297,7 @@
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...chartOptions,
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -274,29 +308,39 @@
                             maxRotation: 45
                         }
                     }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
                 }
             }
         });
 
         // Status Distribution Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
-        new Chart(statusCtx, {
+        const statusChart = new Chart(statusCtx, {
             type: 'bar',
             data: {
-                labels: @json($statusByOpdChart - > pluck('nama_opd')),
+                labels: {
+                    !!json_encode(array_column($statusByOpdChart, 'nama_opd')) !!
+                },
                 datasets: [{
                     label: 'Aktif',
-                    data: @json($statusByOpdChart - > pluck('aktif')),
+                    data: {
+                        !!json_encode(array_column($statusByOpdChart, 'aktif')) !!
+                    },
                     backgroundColor: '#4caf50'
                 }, {
                     label: 'Tidak Aktif',
-                    data: @json($statusByOpdChart - > pluck('tidak_aktif')),
+                    data: {
+                        !!json_encode(array_column($statusByOpdChart, 'tidak_aktif')) !!
+                    },
                     backgroundColor: '#f44336'
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...chartOptions,
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -310,13 +354,18 @@
                             }
                         }
                     }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
                 }
             }
         });
 
         // Status Pie Chart
         const statusPieCtx = document.getElementById('statusPieChart').getContext('2d');
-        new Chart(statusPieCtx, {
+        const statusPieChart = new Chart(statusPieCtx, {
             type: 'doughnut',
             data: {
                 labels: ['Tidak Aktif', 'Aktif'],
@@ -334,20 +383,12 @@
                     borderWidth: 0
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
+            options: chartOptions
         });
 
         // Domain Pie Chart
         const domainPieCtx = document.getElementById('domainPieChart').getContext('2d');
-        new Chart(domainPieCtx, {
+        const domainPieChart = new Chart(domainPieCtx, {
             type: 'doughnut',
             data: {
                 labels: ['Tidak Aktif', 'Aktif', 'Local'],
@@ -369,15 +410,7 @@
                     borderWidth: 0
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
+            options: chartOptions
         });
 
         // User dropdown menu
