@@ -35,23 +35,23 @@
 
         <!-- Actions -->
         <div class="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
-            @auth
-            <a href="{{ url('/dashboard') }}"
+            <?php if(auth()->guard()->check()): ?>
+            <a href="<?php echo e(url('/dashboard')); ?>"
                 class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-200">
                 Masuk ke Dashboard
             </a>
-            @else
-            <a href="{{ route('login') }}"
+            <?php else: ?>
+            <a href="<?php echo e(route('login')); ?>"
                 class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-200 mr-4">
                 Login
             </a>
-            @if (Route::has('register'))
-            <a href="{{ route('register') }}"
+            <?php if(Route::has('register')): ?>
+            <a href="<?php echo e(route('register')); ?>"
                 class="inline-block border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-200">
                 Register
             </a>
-            @endif
-            @endauth
+            <?php endif; ?>
+            <?php endif; ?>
         </div>
 
         <!-- Footer -->
@@ -61,4 +61,4 @@
     </div>
 </body>
 
-</html>
+</html><?php /**PATH C:\xampp\htdocs\DISKOMINFO\laravel\dashboard.diskominfo.purwakarta.kab\resources\views/welcome.blade.php ENDPATH**/ ?>

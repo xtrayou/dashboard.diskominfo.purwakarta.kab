@@ -28,14 +28,15 @@
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Masuk ke Dashboard</h2>
 
             <!-- Session Status -->
-            @if (session('status'))
+            <?php if(session('status')): ?>
             <div class="mb-4 font-medium text-sm text-green-600 bg-green-100 p-3 rounded-lg">
-                {{ session('status') }}
-            </div>
-            @endif
+                <?php echo e(session('status')); ?>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                @csrf
+            </div>
+            <?php endif; ?>
+
+            <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-6">
+                <?php echo csrf_field(); ?>
 
                 <!-- Email Address -->
                 <div>
@@ -45,14 +46,21 @@
                     <input id="email"
                         type="email"
                         name="email"
-                        value="{{ old('email') }}"
+                        value="<?php echo e(old('email')); ?>"
                         required
                         autofocus
                         autocomplete="username"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
-                    @error('email')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="mt-2 text-sm text-red-600"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <!-- Password -->
@@ -66,9 +74,16 @@
                         required
                         autocomplete="current-password"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
-                    @error('password')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="mt-2 text-sm text-red-600"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <!-- Remember Me -->
@@ -81,11 +96,11 @@
                         <span class="ml-2 text-sm text-gray-600">Ingat saya</span>
                     </label>
 
-                    @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800">
+                    <?php if(Route::has('password.request')): ?>
+                    <a href="<?php echo e(route('password.request')); ?>" class="text-sm text-blue-600 hover:text-blue-800">
                         Lupa password?
                     </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <!-- Submit Button -->
@@ -115,4 +130,4 @@
     </div>
 </body>
 
-</html>
+</html><?php /**PATH C:\xampp\htdocs\DISKOMINFO\laravel\dashboard.diskominfo.purwakarta.kab\resources\views/auth/login.blade.php ENDPATH**/ ?>
