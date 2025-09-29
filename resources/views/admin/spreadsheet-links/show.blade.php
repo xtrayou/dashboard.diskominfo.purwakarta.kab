@@ -204,66 +204,54 @@
         }
 
         function loadPreviewData() {
-            // Mock data for preview - in production this would fetch real data
-            const mockData = {
+            // Note: This will fetch real data from the new Google Sheets
+            // Placeholder structure for the real spreadsheet data
+            const placeholderData = {
                 summary: {
-                    total_opd: 48,
-                    total_domains: 228,
-                    active_subdomains: 161,
-                    inactive_subdomains: 67
+                    total_opd: 0,
+                    total_domains: 0,
+                    active_subdomains: 0,
+                    inactive_subdomains: 0
                 },
-                opd_data: [{
-                        name: 'BADAN KEPEGAWAIAN',
-                        domain_count: 5,
-                        active_subdomains: 3,
-                        inactive_subdomains: 2
-                    },
-                    {
-                        name: 'BADAN KEUANGAN',
-                        domain_count: 8,
-                        active_subdomains: 6,
-                        inactive_subdomains: 2
-                    },
-                    {
-                        name: 'DINAS PENDIDIKAN',
-                        domain_count: 12,
-                        active_subdomains: 10,
-                        inactive_subdomains: 2
-                    },
-                    {
-                        name: 'DINAS KESEHATAN',
-                        domain_count: 15,
-                        active_subdomains: 12,
-                        inactive_subdomains: 3
-                    },
-                    {
-                        name: 'SEKRETARIAT DAERAH',
-                        domain_count: 20,
-                        active_subdomains: 18,
-                        inactive_subdomains: 2
-                    }
+                opd_data: [
+                    // Real data will be loaded from the Google Sheets API
+                    // Spreadsheet ID: 1v_IbBctN8Qqoypek8C7kj7eLnb9qSfGDrNWpZ5w1vfM
                 ]
             };
 
-            // Update summary cards
-            document.getElementById('totalOpd').textContent = mockData.summary.total_opd;
-            document.getElementById('activeDomains').textContent = mockData.summary.active_subdomains;
-            document.getElementById('inactiveDomains').textContent = mockData.summary.inactive_subdomains;
-            document.getElementById('totalDomains').textContent = mockData.summary.total_domains;
+            // Update summary cards - showing placeholder until real data loads
+            document.getElementById('totalOpd').textContent = placeholderData.summary.total_opd || 'Loading...';
+            document.getElementById('activeDomains').textContent = placeholderData.summary.active_subdomains || 'Loading...';
+            document.getElementById('inactiveDomains').textContent = placeholderData.summary.inactive_subdomains || 'Loading...';
+            document.getElementById('totalDomains').textContent = placeholderData.summary.total_domains || 'Loading...';
 
             // Update table
             const tbody = document.getElementById('sampleDataTable');
             tbody.innerHTML = '';
 
-            mockData.opd_data.forEach(opd => {
+            if (placeholderData.opd_data.length === 0) {
+                // Show message that real data needs to be loaded
                 const row = tbody.insertRow();
                 row.innerHTML = `
-                    <td class="px-4 py-2 text-sm font-medium text-gray-900">${opd.name}</td>
-                    <td class="px-4 py-2 text-sm text-gray-900">${opd.domain_count}</td>
-                    <td class="px-4 py-2 text-sm text-green-600 font-medium">${opd.active_subdomains}</td>
-                    <td class="px-4 py-2 text-sm text-red-600 font-medium">${opd.inactive_subdomains}</td>
+                    <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                        <div class="text-sm">
+                            <p class="font-medium">Data siap untuk dimuat dari Google Sheets</p>
+                            <p class="mt-1">ID Spreadsheet: 1v_IbBctN8Qqoypek8C7kj7eLnb9qSfGDrNWpZ5w1vfM</p>
+                            <p class="mt-1 text-xs">Tekan tombol "Test Koneksi" untuk memuat data real</p>
+                        </div>
+                    </td>
                 `;
-            });
+            } else {
+                placeholderData.opd_data.forEach(opd => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td class="px-4 py-2 text-sm font-medium text-gray-900">${opd.name}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">${opd.domain_count}</td>
+                        <td class="px-4 py-2 text-sm text-green-600 font-medium">${opd.active_subdomains}</td>
+                        <td class="px-4 py-2 text-sm text-red-600 font-medium">${opd.inactive_subdomains}</td>
+                    `;
+                });
+            }
 
             document.getElementById('dataPreview').classList.remove('hidden');
         }

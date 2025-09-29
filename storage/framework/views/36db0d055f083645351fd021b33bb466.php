@@ -57,33 +57,13 @@
         }
 
         /* Logo Animations */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        /* Logo styling - animations removed */
+        .logo-static {
+            transition: filter 0.3s ease;
         }
 
-        @keyframes pulseSpin {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(90deg) scale(1.1); }
-            50% { transform: rotate(180deg) scale(1); }
-            75% { transform: rotate(270deg) scale(1.1); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-
-        .logo-spin {
-            animation: spin 3s linear infinite;
-        }
-
-        .logo-pulse-spin {
-            animation: pulseSpin 4s ease-in-out infinite;
-        }
-
-        .logo-hover {
-            transition: transform 0.5s ease;
-        }
-
-        .logo-hover:hover {
-            animation: spin 0.5s linear;
+        .logo-static:hover {
+            filter: brightness(1.1);
         }
     </style>
 </head>
@@ -95,7 +75,7 @@
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
                 <img src="<?php echo e(asset('images/logos/logo-diskominfo-purwakarta.jpg')); ?>"
-                    alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg logo-pulse-spin logo-hover cursor-pointer">
+                    alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg logo-static">
                 <div>
                     <h1 class="text-2xl font-bold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
                     <p class="text-gray-200 flex items-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">
@@ -307,16 +287,46 @@
 
     <script>
         // Data from Laravel backend
-        const ipAddressChartLabels = <?php echo json_encode(array_keys($ipAddressChart)); ?>;
-        const ipAddressChartData = <?php echo json_encode(array_values($ipAddressChart)); ?>;
-        const statusByOpdLabels = <?php echo json_encode(array_column($statusByOpdChart, 'nama_opd')); ?>;
-        const statusByOpdAktif = <?php echo json_encode(array_column($statusByOpdChart, 'aktif')); ?>;
-        const statusByOpdTidakAktif = <?php echo json_encode(array_column($statusByOpdChart, 'tidak_aktif')); ?>;
-        const statusDistributionTidakAktif = <?php echo e($statusDistribution['tidak_aktif']); ?>;
-        const statusDistributionAktif = <?php echo e($statusDistribution['aktif']); ?>;
-        const domainDistributionTidakAktif = <?php echo e($domainDistribution['tidak_aktif']); ?>;
-        const domainDistributionAktif = <?php echo e($domainDistribution['aktif']); ?>;
-        const domainDistributionLocal = <?php echo e($domainDistribution['local']); ?>;
+        const ipAddressChartLabels = {
+            !!json_encode(array_keys($ipAddressChart)) !!
+        };
+        const ipAddressChartData = {
+            !!json_encode(array_values($ipAddressChart)) !!
+        };
+        const statusByOpdLabels = {
+            !!json_encode(array_column($statusByOpdChart, 'nama_opd')) !!
+        };
+        const statusByOpdAktif = {
+            !!json_encode(array_column($statusByOpdChart, 'aktif')) !!
+        };
+        const statusByOpdTidakAktif = {
+            !!json_encode(array_column($statusByOpdChart, 'tidak_aktif')) !!
+        };
+        const statusDistributionTidakAktif = {
+            {
+                $statusDistribution['tidak_aktif']
+            }
+        };
+        const statusDistributionAktif = {
+            {
+                $statusDistribution['aktif']
+            }
+        };
+        const domainDistributionTidakAktif = {
+            {
+                $domainDistribution['tidak_aktif']
+            }
+        };
+        const domainDistributionAktif = {
+            {
+                $domainDistribution['aktif']
+            }
+        };
+        const domainDistributionLocal = {
+            {
+                $domainDistribution['local']
+            }
+        };
 
         // Chart configurations
         const chartOptions = {

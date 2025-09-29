@@ -75,28 +75,17 @@ class DashboardController extends Controller
         $femaleCount = collect($sheetsData)->where('gender', 'Female')->count();
         $stateCount = collect($sheetsData)->pluck('home_state')->unique()->count();
 
-        // Statistics for cards (using Google Sheets data)
+        // Statistics for cards (using Google Sheets data from real spreadsheet)
         $stats = [
-            'subdomain_sama' => $totalStudents ?: 724,
-            'aktif' => $maleCount ?: 367,
-            'tidak_aktif' => $femaleCount ?: 354,
-            'kategori_domain' => $stateCount ?: 2,
+            'subdomain_sama' => $totalStudents ?: 0,
+            'aktif' => $maleCount ?: 0,
+            'tidak_aktif' => $femaleCount ?: 0,
+            'kategori_domain' => $stateCount ?: 0,
         ];
 
-        // Chart data - Class Level Distribution from Google Sheets
+        // Chart data - Distribution from real Google Sheets data
         $classLevelData = collect($sheetsData)->groupBy('class_level')->map->count();
-        $ipAddressChart = $classLevelData->take(10)->toArray() ?: [
-            '216.244.84.196' => 300,
-            '216.244.84.194' => 280,
-            '103.133.27.164' => 25,
-            '103.133.27.212' => 20,
-            '103.133.27.213' => 15,
-            '103.133.27.214' => 10,
-            '103.133.27.215' => 8,
-            '103.133.27.216' => 5,
-            '103.133.27.217' => 3,
-            '103.133.27.218' => 2,
-        ];
+        $ipAddressChart = $classLevelData->take(10)->toArray() ?: [];
 
         // Chart data - Distribution by Home State from Google Sheets
         $stateData = collect($sheetsData)->groupBy('home_state');
@@ -128,21 +117,14 @@ class DashboardController extends Controller
             'local' => $topMajors->get($topMajors->keys()->get(2), 0)
         ];
 
-        // Category table data
+        // Category table data - will be populated from real spreadsheet data
         $categoryData = [
-            ['source' => 'INDOGLOBAL', 'status' => 'TIDAK AKTIF', 'record' => 200],
-            ['source' => 'INDOGLOBAL', 'status' => 'AKTIF', 'record' => 205],
-            ['source' => 'LOCAL', 'status' => 'TIDAK AKTIF', 'record' => 46],
-            ['source' => 'LOCAL', 'status' => 'AKTIF', 'record' => 24],
+            // Real data will come from Google Sheets API integration
         ];
 
-        // IP Address table data
+        // IP Address table data - will be populated from real spreadsheet data
         $ipAddressData = [
-            ['ip' => '216.244.84.196', 'aktif' => 1, 'tidak_aktif' => 1],
-            ['ip' => '216.244.84.194', 'aktif' => 1, 'tidak_aktif' => 1],
-            ['ip' => 'Tidak Manual', 'aktif' => 1, 'tidak_aktif' => 0],
-            ['ip' => '103.133.27.164', 'aktif' => 1, 'tidak_aktif' => 0],
-            ['ip' => '103.133.27.212', 'aktif' => 0, 'tidak_aktif' => 1],
+            // Real data will come from Google Sheets API integration
         ];
 
         return view('pages.main.dashboard', compact(
