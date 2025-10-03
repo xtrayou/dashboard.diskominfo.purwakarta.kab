@@ -1,64 +1,105 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Monitoring - Diskominfo Purwakarta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
         }
-        
+
         .card-hover {
             transition: all 0.3s ease;
         }
-        
+
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        
+
         .pulse-animation {
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
         }
-        
+
         .slide-in {
             animation: slideIn 0.8s ease-out;
         }
-        
+
         @keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-display: swap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        
+
         .hero-pattern {
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
         .stats-counter {
-            font-family: 'Inter', monospace;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Enhanced text visibility */
+        h1, h2, h3 {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .text-shadow {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Better button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -86,12 +127,12 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="bg-white hover:bg-gray-100 text-blue-900 px-6 py-2 rounded-lg transition-colors font-medium">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="bg-white hover:bg-gray-100 text-blue-900 px-6 py-2 rounded-lg transition-colors font-medium">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-white hover:text-yellow-200 transition-colors px-4 py-2">Masuk</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-6 py-2 rounded-lg transition-colors font-medium">Daftar</a>
-                        @endif
+                    <a href="{{ route('login') }}" class="text-white hover:text-yellow-200 transition-colors px-4 py-2">Masuk</a>
+                    @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-6 py-2 rounded-lg transition-colors font-medium">Daftar</a>
+                    @endif
                     @endauth
                 </div>
             </div>
@@ -101,31 +142,31 @@
         <div class="relative z-10 container mx-auto px-6 py-16">
             <div class="text-center slide-in">
                 <!-- Hero Title -->
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 font-sans tracking-tight">
                     Dashboard
-                    <span class="bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                    <span class="text-yellow-400 drop-shadow-lg">
                         Monitoring
                     </span>
                 </h1>
-                
-                <p class="text-xl md:text-2xl text-blue-100 mb-4 max-w-3xl mx-auto leading-relaxed">
-                    Sistem monitoring real-time untuk infrastruktur digital 
-                    <span class="font-semibold text-yellow-300">Kabupaten Purwakarta</span>
+
+                <p class="text-xl md:text-2xl text-white mb-4 max-w-3xl mx-auto leading-relaxed font-medium">
+                    Sistem monitoring real-time untuk infrastruktur digital
+                    <span class="font-bold text-yellow-300 drop-shadow-md">Kabupaten Purwakarta</span>
                 </p>
-                
-                <p class="text-lg text-blue-200 mb-12 max-w-2xl mx-auto">
+
+                <p class="text-lg text-blue-100 mb-12 max-w-2xl mx-auto font-normal leading-relaxed">
                     Pantau kesehatan sistem, status subdomain, dan performa server dalam satu dashboard terintegrasi
                 </p>
 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-                    <a href="{{ route('dashboard') }}" class="bg-white hover:bg-gray-100 text-blue-900 px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2">
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-blue-900 px-10 py-4 rounded-xl transition-all duration-300 font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 space-x-3 min-w-[200px]">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                         <span>Lihat Dashboard</span>
                     </a>
-                    <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-lg">
+                    <a href="#features" class="inline-flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-blue-900 px-10 py-4 rounded-xl transition-all duration-300 font-bold text-lg min-w-[200px]">
                         Pelajari Lebih Lanjut
                     </a>
                 </div>
@@ -240,7 +281,7 @@
     <script>
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
@@ -262,58 +303,59 @@
         });
     </script>
 </body>
+
 </html>
-                                <div class="text-blue-100">Total OPD</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-3xl font-bold">0</div>
-                                <div class="text-blue-100">Total Domain</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-3xl font-bold">0</div>
-                                <div class="text-blue-100">Domain Aktif</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-3xl font-bold">0</div>
-                                <div class="text-blue-100">Tidak Aktif</div>
-                            </div>
-                        </div>
-                    </div>
+<div class="text-blue-100">Total OPD</div>
+</div>
+<div class="text-center">
+    <div class="text-3xl font-bold">0</div>
+    <div class="text-blue-100">Total Domain</div>
+</div>
+<div class="text-center">
+    <div class="text-3xl font-bold">0</div>
+    <div class="text-blue-100">Domain Aktif</div>
+</div>
+<div class="text-center">
+    <div class="text-3xl font-bold">0</div>
+    <div class="text-blue-100">Tidak Aktif</div>
+</div>
+</div>
+</div>
 
-                    <!-- CTA Buttons -->
-                    <div class="flex justify-center space-x-4">
-                        @auth
-                        <a href="{{ route('dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
-                            Lihat Dashboard
-                        </a>
-                        @else
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
-                            Login
-                        </a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="bg-white hover:bg-gray-100 text-blue-600 font-bold py-3 px-6 rounded-lg border-2 border-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
-                            Daftar
-                        </a>
-                        @endif
-                        @endauth
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- CTA Buttons -->
+<div class="flex justify-center space-x-4">
+    @auth
+    <a href="{{ route('dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+        Lihat Dashboard
+    </a>
+    @else
+    <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+        Login
+    </a>
+    @if (Route::has('register'))
+    <a href="{{ route('register') }}" class="bg-white hover:bg-gray-100 text-blue-600 font-bold py-3 px-6 rounded-lg border-2 border-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
+        Daftar
+    </a>
+    @endif
+    @endauth
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-gray-400">
+            &copy; {{ date('Y') }} Dashboard OPD Purwakarta.
+            <span class="text-blue-400">Dinas Komunikasi dan Informatika</span>
+        </p>
+        <p class="text-gray-500 text-sm mt-2">
+            Sistem Monitoring Domain dan Subdomain OPD Kabupaten Purwakarta
+        </p>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="text-gray-400">
-                &copy; {{ date('Y') }} Dashboard OPD Purwakarta.
-                <span class="text-blue-400">Dinas Komunikasi dan Informatika</span>
-            </p>
-            <p class="text-gray-500 text-sm mt-2">
-                Sistem Monitoring Domain dan Subdomain OPD Kabupaten Purwakarta
-            </p>
-        </div>
-    </footer>
+</footer>
 </body>
 
 </html>
