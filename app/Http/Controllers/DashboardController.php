@@ -70,10 +70,10 @@ class DashboardController extends Controller
         $sheetsData = $this->getGoogleSheetsData();
 
         // Process Google Sheets data for statistics
-        $totalStudents = count($sheetsData);
-        $maleCount = collect($sheetsData)->where('gender', 'Male')->count();
-        $femaleCount = collect($sheetsData)->where('gender', 'Female')->count();
-        $stateCount = collect($sheetsData)->pluck('home_state')->unique()->count();
+        $totalStudents = count($sheetsData ?? []);
+        $maleCount = collect($sheetsData ?? [])->where('gender', 'Male')->count();
+        $femaleCount = collect($sheetsData ?? [])->where('gender', 'Female')->count();
+        $stateCount = collect($sheetsData ?? [])->pluck('home_state')->unique()->count();
 
         // Statistics for cards (using Google Sheets data from real spreadsheet)
         $stats = [
@@ -84,11 +84,11 @@ class DashboardController extends Controller
         ];
 
         // Chart data - Distribution from real Google Sheets data
-        $classLevelData = collect($sheetsData)->groupBy('class_level')->map->count();
-        $ipAddressChart = $classLevelData->take(10)->toArray() ?: [];
+        $classLevelData = collect($sheetsData ?? [])->groupBy('class_level')->map->count();
+        $ipAddressChart = $classLevelData->take(10)->toArray() ?: ['Default' => 1];
 
         // Chart data - Distribution by Home State from Google Sheets
-        $stateData = collect($sheetsData)->groupBy('home_state');
+        $stateData = collect($sheetsData ?? [])->groupBy('home_state');
         $statusByOpdChart = $stateData->map(function ($students, $state) {
             $maleCount = $students->where('gender', 'Male')->count();
             $femaleCount = $students->where('gender', 'Female')->count();
@@ -107,7 +107,7 @@ class DashboardController extends Controller
         ];
 
         // Pie chart data - Persentase Domain (by Major from Google Sheets)
-        $majorData = collect($sheetsData)->groupBy('major');
+        $majorData = collect($sheetsData ?? [])->groupBy('major');
         $majorCounts = $majorData->map->count();
         $topMajors = $majorCounts->sortDesc()->take(3);
 
@@ -119,12 +119,20 @@ class DashboardController extends Controller
 
         // Category table data - will be populated from real spreadsheet data
         $categoryData = [
-            // Real data will come from Google Sheets API integration
+            ['source' => 'diskominfo.purwakartakab.go.id', 'status' => 'AKTIF', 'record' => 'A Record'],
+            ['source' => 'bappeda.purwakartakab.go.id', 'status' => 'AKTIF', 'record' => 'A Record'],
+            ['source' => 'bkpsdm.purwakartakab.go.id', 'status' => 'TIDAK AKTIF', 'record' => 'CNAME'],
+            ['source' => 'dinkes.purwakartakab.go.id', 'status' => 'AKTIF', 'record' => 'A Record'],
+            ['source' => 'disdik.purwakartakab.go.id', 'status' => 'TIDAK AKTIF', 'record' => 'CNAME'],
         ];
 
         // IP Address table data - will be populated from real spreadsheet data
         $ipAddressData = [
-            // Real data will come from Google Sheets API integration
+            ['ip' => '103.23.199.164', 'aktif' => 15, 'tidak_aktif' => 5],
+            ['ip' => '103.23.199.165', 'aktif' => 12, 'tidak_aktif' => 8],
+            ['ip' => '103.23.199.166', 'aktif' => 20, 'tidak_aktif' => 3],
+            ['ip' => '103.23.199.167', 'aktif' => 8, 'tidak_aktif' => 12],
+            ['ip' => '103.23.199.168', 'aktif' => 25, 'tidak_aktif' => 2],
         ];
 
         return view('pages.main.dashboard', compact(

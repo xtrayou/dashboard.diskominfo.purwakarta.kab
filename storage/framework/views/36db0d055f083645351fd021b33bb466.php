@@ -74,7 +74,7 @@
     <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 text-white p-6 rounded-lg m-4 shadow-lg">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <img src="<?php echo e(asset('images/logos/logo-diskominfo-purwakarta.jpg')); ?>"
+                <img src="<?php echo e(asset('images/logos/logo-diskominfo-purwakarta.svg')); ?>"
                     alt="Logo Diskominfo Purwakarta" class="w-12 h-12 rounded-lg logo-static">
                 <div>
                     <h1 class="text-2xl font-bold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;">DASHBOARD DATA SUBDOMAIN DAN OPD PURWAKARTA</h1>
@@ -91,17 +91,24 @@
                 <!-- User Menu -->
                 <div class="relative">
                     <button id="userMenuButton" class="flex items-center space-x-2 bg-white bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-2 rounded-lg transition-colors border border-white border-opacity-20">
-                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;"><?php echo e(auth()->user()->name); ?></span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;"><?php echo e(auth()->check() ? auth()->user()->name : 'Guest User'); ?></span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                        <?php if(auth()->guard()->check()): ?>
                         <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="<?php echo e(route('admin.spreadsheet-links.index')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Admin Panel</a>
+                        <div class="border-t border-gray-200 my-1"></div>
                         <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
                             <?php echo csrf_field(); ?>
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>
                         </form>
+                        <?php else: ?>
+                        <a href="<?php echo e(route('login')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Login</a>
+                        <a href="<?php echo e(route('register')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Register</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
