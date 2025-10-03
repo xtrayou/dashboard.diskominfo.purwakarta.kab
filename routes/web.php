@@ -5,9 +5,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SpreadsheetLinkController;
 use Illuminate\Support\Facades\Route;
 
-// Public routes - accessible without login
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index']);
+// Landing page route
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
+
+// Dashboard routes - accessible without login for public monitoring
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Public monitoring routes - accessible to everyone
 Route::get('/health-monitoring', [DashboardController::class, 'healthMonitoring'])->name('health.monitoring');
