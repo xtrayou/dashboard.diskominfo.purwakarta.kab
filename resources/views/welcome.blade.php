@@ -22,7 +22,11 @@
     </script>
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(59, 130, 246, 0.8)), url('{{ asset("images/bg-welcomepage.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .card-hover {
@@ -73,33 +77,42 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .hero-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        .hero-pattern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 1;
         }
 
         .stats-counter {
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Enhanced text visibility */
-        h1, h2, h3 {
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        h1,
+        h2,
+        h3 {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .text-shadow {
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         /* Better button styles */
         .btn-primary {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
@@ -108,15 +121,15 @@
     <!-- Hero Section -->
     <div class="min-h-screen gradient-bg hero-pattern relative overflow-hidden">
         <!-- Background Elements -->
-        <div class="absolute inset-0">
-            <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full pulse-animation"></div>
-            <div class="absolute top-40 right-20 w-16 h-16 bg-yellow-400 bg-opacity-20 rounded-full pulse-animation" style="animation-delay: 0.5s;"></div>
-            <div class="absolute bottom-20 left-20 w-24 h-24 bg-white bg-opacity-5 rounded-full pulse-animation" style="animation-delay: 1s;"></div>
-            <div class="absolute bottom-40 right-10 w-12 h-12 bg-blue-300 bg-opacity-20 rounded-full pulse-animation" style="animation-delay: 1.5s;"></div>
+        <div class="absolute inset-0 z-10">
+            <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-15 rounded-full pulse-animation"></div>
+            <div class="absolute top-40 right-20 w-16 h-16 bg-yellow-400 bg-opacity-25 rounded-full pulse-animation" style="animation-delay: 0.5s;"></div>
+            <div class="absolute bottom-20 left-20 w-24 h-24 bg-white bg-opacity-10 rounded-full pulse-animation" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-40 right-10 w-12 h-12 bg-blue-300 bg-opacity-25 rounded-full pulse-animation" style="animation-delay: 1.5s;"></div>
         </div>
 
         <!-- Navigation -->
-        <nav class="relative z-10 px-6 py-4">
+        <nav class="relative z-20 px-6 py-4">
             <div class="container mx-auto flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <img src="{{ asset('images/logos/logo-diskominfo-purwakarta.jpg') }}" alt="Logo Diskominfo" class="h-12 w-12 rounded-lg shadow-lg">
@@ -139,7 +152,7 @@
         </nav>
 
         <!-- Main Content -->
-        <div class="relative z-10 container mx-auto px-6 py-16">
+        <div class="relative z-20 container mx-auto px-6 py-16">
             <div class="text-center slide-in">
                 <!-- Hero Title -->
                 <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 font-sans tracking-tight">
