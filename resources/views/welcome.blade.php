@@ -22,7 +22,8 @@
     </script>
     <style>
         .gradient-bg {
-            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(59, 130, 246, 0.8)), url('{{ asset("images/bg-welcomepage.jpg") }}');
+            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(59, 130, 246, 0.8)),
+            url('{{ asset("images/bg-welcomepage.jpg") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
