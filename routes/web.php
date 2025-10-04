@@ -19,8 +19,9 @@ Route::get('/subdomain-status', [DashboardController::class, 'subdomainStatus'])
 Route::get('/server-infrastructure', [DashboardController::class, 'serverInfrastructure'])->name('server.infrastructure');
 Route::get('/realtime-monitoring', [DashboardController::class, 'realtimeMonitoring'])->name('realtime.monitoring');
 
-// Test route for Google Sheets data (public for testing)
+// Test routes for Google Sheets data (public for testing)
 Route::get('/test-sheets', [DashboardController::class, 'showSheetsData'])->name('test.sheets');
+Route::get('/sheet-info/{sheetName?}', [DashboardController::class, 'getSheetInfo'])->name('sheet.info');
 
 // Authenticated routes - require login
 Route::middleware('auth')->group(function () {

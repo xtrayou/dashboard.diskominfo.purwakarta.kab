@@ -14,107 +14,188 @@ use Illuminate\Support\Facades\Log;
 class DashboardController extends Controller
 {
     /**
-     * Get data from Google Sheets
+     * Your actual spreadsheet ID
      */
-    private function getGoogleSheetsData()
-    {
-        // For now, return empty array to avoid timeout issues
-        // You can later add the actual Google Sheets implementation
-        return [];
+    private $spreadsheetId = '1v_IbBctN8Qqoypek8C7kj7eLnb9qSfGDrNWpZ5w1vfM';
 
-        /* Google Sheets implementation (commented out to avoid timeout)
-        $spreadsheetId = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
-        
-        // Cache for 10 minutes to avoid too many API calls
-        return Cache::remember('google_sheets_data', 600, function () use ($spreadsheetId) {
+    /**
+     * Get list of all sheets in the spreadsheet
+     */
+    private function getSheetsList()
+    {
+        try {
+            // Get spreadsheet metadata to list all sheets
+            $url = "https://docs.google.com/spreadsheets/d/{$this->spreadsheetId}/gviz/tq?tqx=out:json";
+            $response = Http::timeout(10)->get($url);
+            
+            if ($response->successful()) {
+                // This will help us identify available sheets
+                Log::info('Available sheets response received');
+                return ['Sheet1', 'Domain Data', 'OPD List', 'Monitoring']; // Default sheet names
+            }
+            
+            return ['Sheet1']; // Fallback
+        } catch (\Exception $e) {
+            Log::error('Error getting sheets list: ' . $e->getMessage());
+            return ['Sheet1'];
+        }
+    }
+
+    /**
+     * Get data from specific Google Sheets tab
+     */
+    private function getSheetData($sheetName = 'Sheet1')
+    {
+        return Cache::remember("google_sheets_data_{$sheetName}", 300, function () use ($sheetName) {
             try {
-                $url = "https://docs.google.com/spreadsheets/d/{$spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode('Class Data');
-                $response = Http::timeout(5)->get($url);
+                $url = "https://docs.google.com/spreadsheets/d/{$this->spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode($sheetName);
+                $response = Http::timeout(10)->get($url);
 
                 if ($response->successful()) {
                     $csvData = $response->body();
-                    $lines = explode("\n", $csvData);
+                    $lines = array_filter(explode("\n", $csvData), function($line) {
+                        return !empty(trim($line));
+                    });
+
+                    if (empty($lines)) {
+                        return [];
+                    }
+
+                    // Get headers from first row
+                    $headers = str_getcsv(array_shift($lines));
+                    $headers = array_map(function($header) {
+                        return trim($header, '"');
+                    }, $headers);
+
                     $data = [];
-
-                    foreach ($lines as $index => $line) {
-                        if ($index === 0 || empty(trim($line))) continue; // Skip header and empty lines
-
+                    foreach ($lines as $line) {
                         $row = str_getcsv($line);
-                        if (count($row) >= 6) {
-                            $data[] = [
-                                'name' => trim($row[0], '"'),
-                                'gender' => trim($row[1], '"'),
-                                'class_level' => trim($row[2], '"'),
-                                'home_state' => trim($row[3], '"'),
-                                'major' => trim($row[4], '"'),
-                                'extracurricular' => trim($row[5], '"'),
-                            ];
+                        $row = array_map(function($cell) {
+                            return trim($cell, '"');
+                        }, $row);
+
+                        // Combine headers with row data
+                        if (count($row) === count($headers)) {
+                            $data[] = array_combine($headers, $row);
                         }
                     }
 
+                    Log::info("Sheet '{$sheetName}' loaded with " . count($data) . " rows");
                     return $data;
                 }
 
+                Log::warning("Failed to load sheet '{$sheetName}'");
                 return [];
             } catch (\Exception $e) {
-                Log::error('Google Sheets API Error: ' . $e->getMessage());
+                Log::error("Google Sheets API Error for sheet '{$sheetName}': " . $e->getMessage());
                 return [];
             }
         });
-        */
+    }
+
+    /**
+     * Get data from all Google Sheets
+     */
+    private function getAllSheetsData()
+    {
+        $sheets = $this->getSheetsList();
+        $allData = [];
+
+        foreach ($sheets as $sheetName) {
+            $sheetData = $this->getSheetData($sheetName);
+            if (!empty($sheetData)) {
+                $allData[$sheetName] = $sheetData;
+            }
+        }
+
+        return $allData;
+    }
+
+    /**
+     * Parse domain/subdomain data from sheets
+     */
+    private function parseDomainData($sheetsData)
+    {
+        $domainData = [];
+        
+        foreach ($sheetsData as $sheetName => $data) {
+            if (empty($data)) continue;
+
+            foreach ($data as $row) {
+                // Try to identify domain-related columns
+                $domain = $row['Domain'] ?? $row['domain'] ?? $row['Website'] ?? $row['website'] ?? null;
+                $opd = $row['OPD'] ?? $row['opd'] ?? $row['Nama OPD'] ?? $row['nama_opd'] ?? $row['Organization'] ?? null;
+                $status = $row['Status'] ?? $row['status'] ?? $row['Active'] ?? $row['active'] ?? 'Unknown';
+                
+                if ($domain && $opd) {
+                    $domainData[] = [
+                        'domain' => $domain,
+                        'opd' => $opd,
+                        'status' => $status,
+                        'sheet_source' => $sheetName,
+                        'raw_data' => $row
+                    ];
+                }
+            }
+        }
+
+        return $domainData;
     }
 
     public function index()
     {
-        // Get data from Google Sheets
-        $sheetsData = $this->getGoogleSheetsData();
+        // Get data from all Google Sheets
+        $allSheetsData = $this->getAllSheetsData();
+        
+        // Parse domain data from all sheets
+        $domainData = $this->parseDomainData($allSheetsData);
 
-        // Process Google Sheets data for statistics
-        $totalStudents = count($sheetsData ?? []);
-        $maleCount = collect($sheetsData ?? [])->where('gender', 'Male')->count();
-        $femaleCount = collect($sheetsData ?? [])->where('gender', 'Female')->count();
-        $stateCount = collect($sheetsData ?? [])->pluck('home_state')->unique()->count();
+        // Calculate statistics from real data
+        $totalDomains = count($domainData);
+        $activeDomains = collect($domainData)->where('status', 'Active')->count();
+        $inactiveDomains = collect($domainData)->where('status', 'Inactive')->count();
+        $uniqueOpds = collect($domainData)->pluck('opd')->unique()->count();
 
-        // Statistics for cards (using Google Sheets data from real spreadsheet)
+        // Statistics for cards (using real Google Sheets data)
         $stats = [
-            'subdomain_sama' => $totalStudents ?: 0,
-            'aktif' => $maleCount ?: 0,
-            'tidak_aktif' => $femaleCount ?: 0,
-            'kategori_domain' => $stateCount ?: 0,
+            'subdomain_sama' => $totalDomains ?: 0,
+            'aktif' => $activeDomains ?: 0,
+            'tidak_aktif' => $inactiveDomains ?: 0,
+            'kategori_domain' => $uniqueOpds ?: 0,
         ];
 
-        // Chart data - Distribution from real Google Sheets data
-        $classLevelData = collect($sheetsData ?? [])->groupBy('class_level')->map->count();
-        $ipAddressChart = $classLevelData->take(10)->toArray() ?: ['Default' => 1];
+        // Chart data - Domain distribution by OPD from real Google Sheets data
+        $opdDistribution = collect($domainData)->groupBy('opd')->map->count();
+        $ipAddressChart = $opdDistribution->take(10)->toArray() ?: ['No Data' => 1];
 
-        // Chart data - Distribution by Home State from Google Sheets
-        $stateData = collect($sheetsData ?? [])->groupBy('home_state');
-        $statusByOpdChart = $stateData->map(function ($students, $state) {
-            $maleCount = $students->where('gender', 'Male')->count();
-            $femaleCount = $students->where('gender', 'Female')->count();
+        // Chart data - Status by OPD from real Google Sheets data
+        $statusByOpd = collect($domainData)->groupBy('opd');
+        $statusByOpdChart = $statusByOpd->map(function ($domains, $opd) {
+            $activeCount = $domains->where('status', 'Active')->count();
+            $inactiveCount = $domains->where('status', 'Inactive')->count();
 
             return (object) [
-                'nama_opd' => $state,
-                'aktif' => $maleCount,
-                'tidak_aktif' => $femaleCount
+                'nama_opd' => $opd,
+                'aktif' => $activeCount,
+                'tidak_aktif' => $inactiveCount
             ];
         })->values();
 
-        // Pie chart data - Persentase Status
+        // Pie chart data - Status distribution from real data
         $statusDistribution = [
             'tidak_aktif' => $stats['tidak_aktif'],
             'aktif' => $stats['aktif']
         ];
 
-        // Pie chart data - Persentase Domain (by Major from Google Sheets)
-        $majorData = collect($sheetsData ?? [])->groupBy('major');
-        $majorCounts = $majorData->map->count();
-        $topMajors = $majorCounts->sortDesc()->take(3);
-
+        // Pie chart data - Domain distribution by sheet source
+        $sheetDistribution = collect($domainData)->groupBy('sheet_source');
+        $sheetCounts = $sheetDistribution->map->count();
+        
         $domainDistribution = [
-            'tidak_aktif' => $topMajors->get($topMajors->keys()->get(0), 0),
-            'aktif' => $topMajors->get($topMajors->keys()->get(1), 0),
-            'local' => $topMajors->get($topMajors->keys()->get(2), 0)
+            'sheet1' => $sheetCounts->get('Sheet1', 0),
+            'domain_data' => $sheetCounts->get('Domain Data', 0),
+            'opd_list' => $sheetCounts->get('OPD List', 0),
+            'monitoring' => $sheetCounts->get('Monitoring', 0)
         ];
 
         // Category table data - will be populated from real spreadsheet data
@@ -143,7 +224,8 @@ class DashboardController extends Controller
             'domainDistribution',
             'categoryData',
             'ipAddressData',
-            'sheetsData'
+            'allSheetsData',
+            'domainData'
         ));
     }
 
@@ -152,11 +234,67 @@ class DashboardController extends Controller
      */
     public function showSheetsData()
     {
-        $sheetsData = $this->getGoogleSheetsData();
+        $allSheetsData = $this->getAllSheetsData();
+        $domainData = $this->parseDomainData($allSheetsData);
+        
         return response()->json([
             'success' => true,
-            'count' => count($sheetsData),
-            'data' => $sheetsData
+            'spreadsheet_id' => $this->spreadsheetId,
+            'sheets_count' => count($allSheetsData),
+            'total_domains' => count($domainData),
+            'all_sheets_data' => $allSheetsData,
+            'parsed_domain_data' => $domainData,
+            'available_columns' => $this->getAvailableColumns($allSheetsData)
+        ]);
+    }
+
+    /**
+     * Get all available columns from all sheets
+     */
+    private function getAvailableColumns($sheetsData)
+    {
+        $columns = [];
+        
+        foreach ($sheetsData as $sheetName => $data) {
+            if (!empty($data)) {
+                $columns[$sheetName] = array_keys($data[0]);
+            }
+        }
+        
+        return $columns;
+    }
+
+    /**
+     * Get specific sheet data with column info
+     */
+    public function getSheetInfo($sheetName = null)
+    {
+        if ($sheetName) {
+            $sheetData = $this->getSheetData($sheetName);
+            $columns = !empty($sheetData) ? array_keys($sheetData[0]) : [];
+            
+            return response()->json([
+                'sheet_name' => $sheetName,
+                'row_count' => count($sheetData),
+                'columns' => $columns,
+                'sample_data' => array_slice($sheetData, 0, 5),
+                'full_data' => $sheetData
+            ]);
+        }
+        
+        $allSheets = $this->getAllSheetsData();
+        $sheetInfo = [];
+        
+        foreach ($allSheets as $name => $data) {
+            $sheetInfo[$name] = [
+                'row_count' => count($data),
+                'columns' => !empty($data) ? array_keys($data[0]) : []
+            ];
+        }
+        
+        return response()->json([
+            'available_sheets' => array_keys($allSheets),
+            'sheet_info' => $sheetInfo
         ]);
     }
 
